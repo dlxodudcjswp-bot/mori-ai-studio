@@ -71,7 +71,8 @@ class MoriClient(discord.Client):
                 "- /workflow\n"
                 "- /task-start\n"
                 "- /task-done\n"
-                "- /task-todo"
+                "- /task-todo\n"
+                "- /task-create"
             )
             await interaction.response.send_message(message)
 
@@ -130,6 +131,11 @@ class MoriClient(discord.Client):
                 await interaction.response.send_message("❌ Task not found.")
                 return
             await interaction.response.send_message(f"✅ Updated {task.id} to Todo")
+
+        @self.tree.command(name="task-create", description="Create a new task")
+        async def task_create_command(interaction: discord.Interaction, title: str, assignee: str, priority: str) -> None:
+            task = self.task_manager.create_task(title=title, assignee=assignee, priority=priority)
+            await interaction.response.send_message(f"✅ Created {task.id} - {task.title}")
 
     async def setup_hook(self) -> None:
         guild_id = os.getenv("DISCORD_GUILD_ID", "").strip()

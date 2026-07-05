@@ -58,6 +58,14 @@ class TaskManager:
         self.save()
         return task
 
+    def create_task(self, title: str, assignee: str, priority: str) -> Task:
+        next_number = len(self.tasks) + 1
+        task_id = f"TASK-{next_number:03d}"
+        task = Task(id=task_id, title=title, status="Todo", assignee=assignee, priority=priority)
+        self.tasks.append(task)
+        self.save()
+        return task
+
     def get_tasks_by_status(self, status: str) -> list[Task]:
         return [task for task in self.tasks if task.status == status]
 
