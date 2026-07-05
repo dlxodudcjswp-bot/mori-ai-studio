@@ -103,6 +103,7 @@ class MoriClient(discord.Client):
 
         @self.tree.command(name="tasks", description="Show the current task board")
         async def tasks_command(interaction: discord.Interaction) -> None:
+            self.task_manager.refresh()
             await interaction.response.send_message(self.task_manager.format_board())
 
         @self.tree.command(name="workflow", description="Show the current workflow status")
@@ -111,6 +112,7 @@ class MoriClient(discord.Client):
 
         @self.tree.command(name="task-start", description="Mark a task as In Progress")
         async def task_start_command(interaction: discord.Interaction, task_id: str) -> None:
+            self.task_manager.refresh()
             task = self.task_manager.update_task_status(task_id, "In Progress")
             if task is None:
                 await interaction.response.send_message("❌ Task not found.")
@@ -119,6 +121,7 @@ class MoriClient(discord.Client):
 
         @self.tree.command(name="task-done", description="Mark a task as Done")
         async def task_done_command(interaction: discord.Interaction, task_id: str) -> None:
+            self.task_manager.refresh()
             task = self.task_manager.update_task_status(task_id, "Done")
             if task is None:
                 await interaction.response.send_message("❌ Task not found.")
@@ -127,6 +130,7 @@ class MoriClient(discord.Client):
 
         @self.tree.command(name="task-todo", description="Mark a task as Todo")
         async def task_todo_command(interaction: discord.Interaction, task_id: str) -> None:
+            self.task_manager.refresh()
             task = self.task_manager.update_task_status(task_id, "Todo")
             if task is None:
                 await interaction.response.send_message("❌ Task not found.")
@@ -135,11 +139,13 @@ class MoriClient(discord.Client):
 
         @self.tree.command(name="task-create", description="Create a new task")
         async def task_create_command(interaction: discord.Interaction, title: str, assignee: str, priority: str) -> None:
+            self.task_manager.refresh()
             task = self.task_manager.create_task(title=title, assignee=assignee, priority=priority)
             await interaction.response.send_message(f"✅ Created {task.id} - {task.title}")
 
         @self.tree.command(name="task-assign", description="Assign a task to an agent")
         async def task_assign_command(interaction: discord.Interaction, task_id: str, assignee: str) -> None:
+            self.task_manager.refresh()
             try:
                 task = self.task_manager.assign_task(task_id=task_id, assignee=assignee)
             except ValueError:

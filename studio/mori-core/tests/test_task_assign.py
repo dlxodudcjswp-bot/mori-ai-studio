@@ -38,6 +38,17 @@ class TaskAssignTests(unittest.TestCase):
 
             self.assertIsNone(manager.assign_task("UNKNOWN", "QA"))
 
+    def test_task_manager_refreshes_from_storage_after_external_change(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            storage = Storage(base_dir=tmpdir)
+            manager_a = TaskManager(storage=storage)
+            manager_b = TaskManager(storage=storage)
+
+            manager_a.create_task("New Task", "PM", "High")
+            manager_b.refresh()
+
+            self.assertIsNotNone(manager_b.get_task("TASK-004"))
+
 
 if __name__ == "__main__":
     unittest.main()

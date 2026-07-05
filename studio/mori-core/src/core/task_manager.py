@@ -46,6 +46,9 @@ class TaskManager:
     def save(self) -> None:
         self._save(self.tasks)
 
+    def refresh(self) -> None:
+        self.tasks = self._load()
+
     def get_task(self, task_id: str) -> Task | None:
         return next((task for task in self.tasks if task.id == task_id), None)
 
