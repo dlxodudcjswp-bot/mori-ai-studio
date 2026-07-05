@@ -46,6 +46,18 @@ class TaskManager:
     def save(self) -> None:
         self._save(self.tasks)
 
+    def get_task(self, task_id: str) -> Task | None:
+        return next((task for task in self.tasks if task.id == task_id), None)
+
+    def update_task_status(self, task_id: str, status: str) -> Task | None:
+        task = self.get_task(task_id)
+        if task is None:
+            return None
+
+        task.status = status
+        self.save()
+        return task
+
     def get_tasks_by_status(self, status: str) -> list[Task]:
         return [task for task in self.tasks if task.status == status]
 

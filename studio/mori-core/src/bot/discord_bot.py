@@ -68,7 +68,10 @@ class MoriClient(discord.Client):
                 "- /developer\n"
                 "- /qa\n"
                 "- /tasks\n"
-                "- /workflow"
+                "- /workflow\n"
+                "- /task-start\n"
+                "- /task-done\n"
+                "- /task-todo"
             )
             await interaction.response.send_message(message)
 
@@ -103,6 +106,30 @@ class MoriClient(discord.Client):
         @self.tree.command(name="workflow", description="Show the current workflow status")
         async def workflow_command(interaction: discord.Interaction) -> None:
             await interaction.response.send_message(self.workflow_engine.format_workflow())
+
+        @self.tree.command(name="task-start", description="Mark a task as In Progress")
+        async def task_start_command(interaction: discord.Interaction, task_id: str) -> None:
+            task = self.task_manager.update_task_status(task_id, "In Progress")
+            if task is None:
+                await interaction.response.send_message("❌ Task not found.")
+                return
+            await interaction.response.send_message(f"✅ Updated {task.id} to In Progress")
+
+        @self.tree.command(name="task-done", description="Mark a task as Done")
+        async def task_done_command(interaction: discord.Interaction, task_id: str) -> None:
+            task = self.task_manager.update_task_status(task_id, "Done")
+            if task is None:
+                await interaction.response.send_message("❌ Task not found.")
+                return
+            await interaction.response.send_message(f"✅ Updated {task.id} to Done")
+
+        @self.tree.command(name="task-todo", description="Mark a task as Todo")
+        async def task_todo_command(interaction: discord.Interaction, task_id: str) -> None:
+            task = self.task_manager.update_task_status(task_id, "Todo")
+            if task is None:
+                await interaction.response.send_message("❌ Task not found.")
+                return
+            await interaction.response.send_message(f"✅ Updated {task.id} to Todo")
 
     async def setup_hook(self) -> None:
         guild_id = os.getenv("DISCORD_GUILD_ID", "").strip()
