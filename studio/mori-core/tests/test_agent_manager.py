@@ -18,10 +18,10 @@ class AgentManagerTests(unittest.TestCase):
         self.assertEqual(manager.get_agent("developer").status, "Idle")
         self.assertEqual(manager.get_agent("qa").status, "Idle")
         self.assertEqual(manager.get_status_lines(), [
-            "PM: Idle",
-            "Designer: Idle",
-            "Developer: Idle",
-            "QA: Idle",
+            "PM\nStatus: Idle\nCurrent Task: None",
+            "Designer\nStatus: Idle\nCurrent Task: None",
+            "Developer\nStatus: Idle\nCurrent Task: None",
+            "QA\nStatus: Idle\nCurrent Task: None",
         ])
 
 

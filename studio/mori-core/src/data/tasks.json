@@ -33,5 +33,12 @@
     "status": "Todo",
     "assignee": "PM",
     "priority": "High"
+  },
+  {
+    "id": "TASK-006",
+    "title": "\ubc84\uadf8 \ud14c\uc2a4\ud2b8",
+    "status": "Todo",
+    "assignee": "Developer",
+    "priority": "High"
   }
 ]

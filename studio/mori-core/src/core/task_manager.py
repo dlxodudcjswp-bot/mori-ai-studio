@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from src.core.agent_manager import AgentManager
 from src.core.storage import Storage
 
 
@@ -13,8 +14,9 @@ class Task:
 
 
 class TaskManager:
-    def __init__(self, storage: Storage | None = None) -> None:
+    def __init__(self, storage: Storage | None = None, agent_manager: AgentManager | None = None) -> None:
         self.storage = storage or Storage()
+        self.agent_manager = agent_manager or AgentManager(storage=self.storage)
         self.tasks = self._load()
 
     def _load(self) -> list[Task]:
@@ -80,6 +82,7 @@ class TaskManager:
 
         task.assignee = assignee
         self.save()
+        self.agent_manager.sync_task_assignment(task.id, assignee)
         return task
 
     def get_tasks_by_status(self, status: str) -> list[Task]:

@@ -41,7 +41,7 @@ class MoriClient(discord.Client):
         super().__init__(intents=intents)
         self.tree = discord.app_commands.CommandTree(self)
         self.agent_manager = AgentManager()
-        self.task_manager = TaskManager()
+        self.task_manager = TaskManager(agent_manager=self.agent_manager)
         self.workflow_engine = WorkflowEngine()
         self._register_commands()
 
