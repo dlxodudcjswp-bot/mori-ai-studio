@@ -1,0 +1,27 @@
+[
+  {
+    "step_name": "PM Review",
+    "assigned_agent": "PM",
+    "status": "Done"
+  },
+  {
+    "step_name": "Design",
+    "assigned_agent": "Designer",
+    "status": "Pending"
+  },
+  {
+    "step_name": "Development",
+    "assigned_agent": "Developer",
+    "status": "Pending"
+  },
+  {
+    "step_name": "QA",
+    "assigned_agent": "QA",
+    "status": "Pending"
+  },
+  {
+    "step_name": "PM Approval",
+    "assigned_agent": "PM",
+    "status": "Pending"
+  }
+]

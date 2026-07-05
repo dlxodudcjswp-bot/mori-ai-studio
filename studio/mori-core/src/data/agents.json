@@ -1,0 +1,26 @@
+{
+  "pm": {
+    "name": "PM",
+    "role": "Project Manager",
+    "status": "Idle",
+    "current_task": "None"
+  },
+  "designer": {
+    "name": "Designer",
+    "role": "Design",
+    "status": "Idle",
+    "current_task": "None"
+  },
+  "developer": {
+    "name": "Developer",
+    "role": "Development",
+    "status": "Idle",
+    "current_task": "None"
+  },
+  "qa": {
+    "name": "QA",
+    "role": "Quality Assurance",
+    "status": "Idle",
+    "current_task": "None"
+  }
+}

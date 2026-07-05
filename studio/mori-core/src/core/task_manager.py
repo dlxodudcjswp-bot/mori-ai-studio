@@ -1,4 +1,6 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+
+from src.core.storage import Storage
 
 
 @dataclass
@@ -11,12 +13,38 @@ class Task:
 
 
 class TaskManager:
-    def __init__(self) -> None:
-        self.tasks: list[Task] = [
+    def __init__(self, storage: Storage | None = None) -> None:
+        self.storage = storage or Storage()
+        self.tasks = self._load()
+
+    def _load(self) -> list[Task]:
+        data = self.storage.load_json("tasks.json")
+        if isinstance(data, list) and data:
+            return [Task(**task) for task in data]
+
+        default_tasks = [
             Task(id="TASK-001", title="Task-008 Task Board", status="Todo", assignee="PM", priority="High"),
             Task(id="TASK-002", title="Issue Tracker", status="In Progress", assignee="Developer", priority="Medium"),
             Task(id="TASK-003", title="AI Workflow", status="Done", assignee="Designer", priority="Low"),
         ]
+        self._save(default_tasks)
+        return default_tasks
+
+    def _save(self, tasks: list[Task]) -> None:
+        payload = [
+            {
+                "id": task.id,
+                "title": task.title,
+                "status": task.status,
+                "assignee": task.assignee,
+                "priority": task.priority,
+            }
+            for task in tasks
+        ]
+        self.storage.save_json("tasks.json", payload)
+
+    def save(self) -> None:
+        self._save(self.tasks)
 
     def get_tasks_by_status(self, status: str) -> list[Task]:
         return [task for task in self.tasks if task.status == status]
