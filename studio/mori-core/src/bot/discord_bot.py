@@ -2,6 +2,8 @@ import os
 
 import discord
 
+from src.core.agent_manager import AgentManager
+
 
 async def sync_commands(tree: discord.app_commands.CommandTree, *, guild_id: str | None = None) -> int:
     resolved_guild_id = guild_id if guild_id is not None else os.getenv("DISCORD_GUILD_ID", "").strip()
@@ -36,6 +38,7 @@ class MoriClient(discord.Client):
     def __init__(self, *, intents: discord.Intents) -> None:
         super().__init__(intents=intents)
         self.tree = discord.app_commands.CommandTree(self)
+        self.agent_manager = AgentManager()
         self._register_commands()
 
     def _register_commands(self) -> None:
@@ -45,13 +48,8 @@ class MoriClient(discord.Client):
 
         @self.tree.command(name="status", description="Show Mori Core status")
         async def status_command(interaction: discord.Interaction) -> None:
-            message = (
-                "Mori Core v0.4\n"
-                "PM: Idle\n"
-                "Developer: Idle\n"
-                "Designer: Idle\n"
-                "QA: Idle"
-            )
+            status_lines = self.agent_manager.get_status_lines()
+            message = "\n".join(["Mori Core v0.5", *status_lines])
             await interaction.response.send_message(message)
 
         @self.tree.command(name="help", description="Show available commands")
@@ -70,19 +68,27 @@ class MoriClient(discord.Client):
 
         @self.tree.command(name="pm", description="Notify the PM agent")
         async def pm_command(interaction: discord.Interaction) -> None:
-            await interaction.response.send_message("💼 PM Agent is ready.")
+            agent = self.agent_manager.get_agent("pm")
+            message = f"💼 {agent.name} Agent is ready. Status: {agent.status}" if agent else "💼 PM Agent is ready."
+            await interaction.response.send_message(message)
 
         @self.tree.command(name="designer", description="Notify the Designer agent")
         async def designer_command(interaction: discord.Interaction) -> None:
-            await interaction.response.send_message("🎨 Designer Agent is ready.")
+            agent = self.agent_manager.get_agent("designer")
+            message = f"🎨 {agent.name} Agent is ready. Status: {agent.status}" if agent else "🎨 Designer Agent is ready."
+            await interaction.response.send_message(message)
 
         @self.tree.command(name="developer", description="Notify the Developer agent")
         async def developer_command(interaction: discord.Interaction) -> None:
-            await interaction.response.send_message("💻 Developer Agent is ready.")
+            agent = self.agent_manager.get_agent("developer")
+            message = f"💻 {agent.name} Agent is ready. Status: {agent.status}" if agent else "💻 Developer Agent is ready."
+            await interaction.response.send_message(message)
 
         @self.tree.command(name="qa", description="Notify the QA agent")
         async def qa_command(interaction: discord.Interaction) -> None:
-            await interaction.response.send_message("🧪 QA Agent is ready.")
+            agent = self.agent_manager.get_agent("qa")
+            message = f"🧪 {agent.name} Agent is ready. Status: {agent.status}" if agent else "🧪 QA Agent is ready."
+            await interaction.response.send_message(message)
 
     async def setup_hook(self) -> None:
         guild_id = os.getenv("DISCORD_GUILD_ID", "").strip()
