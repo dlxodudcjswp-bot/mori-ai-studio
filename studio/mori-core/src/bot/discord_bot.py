@@ -72,7 +72,8 @@ class MoriClient(discord.Client):
                 "- /task-start\n"
                 "- /task-done\n"
                 "- /task-todo\n"
-                "- /task-create"
+                "- /task-create\n"
+                "- /task-assign"
             )
             await interaction.response.send_message(message)
 
@@ -136,6 +137,20 @@ class MoriClient(discord.Client):
         async def task_create_command(interaction: discord.Interaction, title: str, assignee: str, priority: str) -> None:
             task = self.task_manager.create_task(title=title, assignee=assignee, priority=priority)
             await interaction.response.send_message(f"✅ Created {task.id} - {task.title}")
+
+        @self.tree.command(name="task-assign", description="Assign a task to an agent")
+        async def task_assign_command(interaction: discord.Interaction, task_id: str, assignee: str) -> None:
+            try:
+                task = self.task_manager.assign_task(task_id=task_id, assignee=assignee)
+            except ValueError:
+                await interaction.response.send_message("❌ Unknown assignee.")
+                return
+
+            if task is None:
+                await interaction.response.send_message("❌ Task not found.")
+                return
+
+            await interaction.response.send_message(f"✅ Assigned {task.id} to {task.assignee}")
 
     async def setup_hook(self) -> None:
         guild_id = os.getenv("DISCORD_GUILD_ID", "").strip()

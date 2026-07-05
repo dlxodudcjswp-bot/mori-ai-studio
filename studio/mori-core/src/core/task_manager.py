@@ -66,6 +66,19 @@ class TaskManager:
         self.save()
         return task
 
+    def assign_task(self, task_id: str, assignee: str) -> Task | None:
+        task = self.get_task(task_id)
+        if task is None:
+            return None
+
+        allowed_assignees = {"PM", "Designer", "Developer", "QA"}
+        if assignee not in allowed_assignees:
+            raise ValueError("Unknown assignee")
+
+        task.assignee = assignee
+        self.save()
+        return task
+
     def get_tasks_by_status(self, status: str) -> list[Task]:
         return [task for task in self.tasks if task.status == status]
 
