@@ -3,6 +3,7 @@ import os
 import discord
 
 from src.core.agent_manager import AgentManager
+from src.core.task_manager import TaskManager
 
 
 async def sync_commands(tree: discord.app_commands.CommandTree, *, guild_id: str | None = None) -> int:
@@ -39,6 +40,7 @@ class MoriClient(discord.Client):
         super().__init__(intents=intents)
         self.tree = discord.app_commands.CommandTree(self)
         self.agent_manager = AgentManager()
+        self.task_manager = TaskManager()
         self._register_commands()
 
     def _register_commands(self) -> None:
@@ -62,7 +64,8 @@ class MoriClient(discord.Client):
                 "- /pm\n"
                 "- /designer\n"
                 "- /developer\n"
-                "- /qa"
+                "- /qa\n"
+                "- /tasks"
             )
             await interaction.response.send_message(message)
 
@@ -89,6 +92,10 @@ class MoriClient(discord.Client):
             agent = self.agent_manager.get_agent("qa")
             message = f"🧪 {agent.name} Agent is ready. Status: {agent.status}" if agent else "🧪 QA Agent is ready."
             await interaction.response.send_message(message)
+
+        @self.tree.command(name="tasks", description="Show the current task board")
+        async def tasks_command(interaction: discord.Interaction) -> None:
+            await interaction.response.send_message(self.task_manager.format_board())
 
     async def setup_hook(self) -> None:
         guild_id = os.getenv("DISCORD_GUILD_ID", "").strip()
