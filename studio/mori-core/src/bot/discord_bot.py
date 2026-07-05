@@ -4,6 +4,7 @@ import discord
 
 from src.core.agent_manager import AgentManager
 from src.core.task_manager import TaskManager
+from src.core.workflow_engine import WorkflowEngine
 
 
 async def sync_commands(tree: discord.app_commands.CommandTree, *, guild_id: str | None = None) -> int:
@@ -41,6 +42,7 @@ class MoriClient(discord.Client):
         self.tree = discord.app_commands.CommandTree(self)
         self.agent_manager = AgentManager()
         self.task_manager = TaskManager()
+        self.workflow_engine = WorkflowEngine()
         self._register_commands()
 
     def _register_commands(self) -> None:
@@ -65,7 +67,8 @@ class MoriClient(discord.Client):
                 "- /designer\n"
                 "- /developer\n"
                 "- /qa\n"
-                "- /tasks"
+                "- /tasks\n"
+                "- /workflow"
             )
             await interaction.response.send_message(message)
 
@@ -96,6 +99,10 @@ class MoriClient(discord.Client):
         @self.tree.command(name="tasks", description="Show the current task board")
         async def tasks_command(interaction: discord.Interaction) -> None:
             await interaction.response.send_message(self.task_manager.format_board())
+
+        @self.tree.command(name="workflow", description="Show the current workflow status")
+        async def workflow_command(interaction: discord.Interaction) -> None:
+            await interaction.response.send_message(self.workflow_engine.format_workflow())
 
     async def setup_hook(self) -> None:
         guild_id = os.getenv("DISCORD_GUILD_ID", "").strip()
