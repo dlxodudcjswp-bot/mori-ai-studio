@@ -21,7 +21,7 @@ except ImportError:  # pragma: no cover - graceful fallback for bootstrap
 
 def main() -> None:
     load_dotenv()
-    print("Mori Core v0.2 Booting...")
+    print("Mori Core v0.3 Booting...")
     print("환경변수 확인")
 
     token = os.getenv("DISCORD_BOT_TOKEN", "").strip()

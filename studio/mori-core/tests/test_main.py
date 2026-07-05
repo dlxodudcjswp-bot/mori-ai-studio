@@ -21,7 +21,7 @@ class MainTests(unittest.TestCase):
                 main.main()
 
         stdout = output.getvalue()
-        self.assertIn("Mori Core v0.2 Booting...", stdout)
+        self.assertIn("Mori Core v0.3 Booting...", stdout)
         self.assertIn("환경변수 확인", stdout)
         self.assertIn("Discord token not found.", stdout)
         self.assertIn("Running in Local Mode.", stdout)
